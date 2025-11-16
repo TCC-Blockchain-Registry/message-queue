@@ -21,8 +21,6 @@ services:
       retries: 5
       start_period: 40s
     restart: unless-stopped
-    networks:
-      - property-network
 
 volumes:
   rabbitmq_data:
@@ -31,5 +29,6 @@ volumes:
     driver: local
 
 networks:
-  property-network:
-    driver: bridge
+  default:
+    name: property-network
+    external: true
