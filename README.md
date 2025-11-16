@@ -1,39 +1,48 @@
 # RabbitMQ Message Queue
 
-Message queue infrastructure for the Property Tokenization Platform.
+Message queue infrastructure for asynchronous blockchain job processing in the property tokenization platform.
 
-## Purpose
+## Overview
 
-Provides asynchronous job processing for blockchain operations:
-- Decouples Orchestrator from slow blockchain calls
-- Ensures reliable message delivery
-- Enables retry logic for failed transactions
-- Allows horizontal scaling of workers
+This service provides the RabbitMQ message queue infrastructure that enables reliable, asynchronous processing of blockchain operations. It decouples the REST API layer from slow blockchain transactions, ensuring system responsiveness and fault tolerance.
+
+The queue acts as the communication backbone between the core orchestrator (job publisher) and the queue worker (job consumer), implementing reliable message delivery, automatic retry logic, and dead-letter queue handling for failed jobs
+
+## Tech Stack
+
+- **RabbitMQ 3.12** - Message broker with management plugin
+- **Docker & Docker Compose** - Containerization
+- **AMQP Protocol** - Message queue protocol
 
 ## Architecture
 
 ```
-Orchestrator (Producer)
-    ↓ Publishes
+Orchestrator (Publisher)
+    ↓ Publishes jobs
 blockchain-exchange (Topic Exchange)
-    ↓ Routes by pattern
-blockchain-jobs (Main Queue)
-    ↓ Consumes
+    ↓ Routes to queue
+blockchain-jobs (Durable Queue)
+    ↓ Worker consumes
 Queue Worker (Consumer)
-
-If job fails after max retries:
-    ↓
+    ↓ On failure after retries
 blockchain-jobs-dlq (Dead Letter Queue)
 ```
 
+## Prerequisites
+
+- Docker 20.10+
+- Docker Compose 2.0+
+- Ports 5672 (AMQP) and 15672 (Management UI) available
+
 ## Quick Start
 
-### Start RabbitMQ
-
 ```bash
+# Clone repository
+git clone <repository-url>
 cd message-queue
+
+# Start RabbitMQ
 docker-compose up -d
-```
 
 ### Verify Running
 
