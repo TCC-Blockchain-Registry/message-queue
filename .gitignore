@@ -1,0 +1,15 @@
+# Docker volumes
+data/
+logs/
+
+# Backups
+*.tar.gz
+backup/
+
+# Environment
+.env
+.env.local
+
+# OS
+.DS_Store
+Thumbs.db
